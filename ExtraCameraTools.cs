@@ -132,7 +132,8 @@ public class ExtraCameraTools : EditorWindow
             }
 
             // Directly edit the scene size
-            if (sceneView.size != newSize)
+            bool editsByClamp = sceneView.size > data.maxZoom && newSize == data.maxZoom;
+            if (sceneView.size != newSize && !editsByClamp)
             {
                 // Calculate the offset
                 Quaternion camRot = sceneView.camera.transform.rotation;
