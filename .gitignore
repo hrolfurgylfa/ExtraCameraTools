@@ -58,3 +58,6 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# Ignore settings file
+ExtraCameraToolsData.asset
+ExtraCameraToolsData.asset.meta
