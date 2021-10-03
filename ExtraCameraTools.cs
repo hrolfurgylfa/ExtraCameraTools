@@ -9,8 +9,6 @@ public class ExtraCameraTools : EditorWindow
     public static string dataLocation = "Assets/Editor/ExtraCameraTools/ExtraCameraToolsData.asset";
     private static ExtraCameraToolsData data;
 
-    private static AnimBool debugHidden;
-
     // GUI Styles
     private static GUIStyle headerSkin;
 
@@ -26,9 +24,6 @@ public class ExtraCameraTools : EditorWindow
 
         // Open the UI if it was enabled before
         if (data.UIEnabled) SceneView.duringSceneGui += OnScene;
-
-        // Setup values
-        debugHidden = new AnimBool(data.showDebugOptions);
     }
 
     [MenuItem("Window/Toggle Extra Camera Tools")]
