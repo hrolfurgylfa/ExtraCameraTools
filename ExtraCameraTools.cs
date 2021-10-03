@@ -31,7 +31,7 @@ public class ExtraCameraTools : EditorWindow
         debugHidden = new AnimBool(data.showDebugOptions);
     }
 
-    [MenuItem("Window/Toogle Extra Camera Tools")]
+    [MenuItem("Window/Toggle Extra Camera Tools")]
     public static void Toggle()
     {
         if (data.UIEnabled) SceneView.duringSceneGui -= OnScene;
