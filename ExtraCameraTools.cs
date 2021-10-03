@@ -11,6 +11,7 @@ public class ExtraCameraTools : EditorWindow
 
     // GUI Styles
     private static GUIStyle headerSkin;
+    private static GUIStyle windowSkin;
 
     static ExtraCameraTools()
     {
@@ -42,6 +43,9 @@ public class ExtraCameraTools : EditorWindow
         //////////////////
         headerSkin = new GUIStyle(GUI.skin.label);
         headerSkin.fontStyle = FontStyle.Bold;
+        windowSkin = new GUIStyle(GUI.skin.window);
+        windowSkin.padding.top = windowSkin.padding.bottom;
+        windowSkin.margin.top = 0;
 
         Handles.BeginGUI();
         float newSize;
@@ -50,8 +54,8 @@ public class ExtraCameraTools : EditorWindow
             /////////////////////////
             //  Render Closed GUI  //
             /////////////////////////
-            GUILayout.BeginVertical(GUI.skin.window, GUILayout.Width(50), GUILayout.Height(50));
-            if (GUILayout.Button(">")) data.UIhidden = false;
+            GUILayout.BeginVertical(windowSkin, GUILayout.Width(10), GUILayout.Height(10));
+            if (GUILayout.Button(">", GUILayout.Width(30))) data.UIhidden = false;
             GUILayout.EndVertical();
             newSize = sceneView.size;
         }
@@ -60,8 +64,9 @@ public class ExtraCameraTools : EditorWindow
             ///////////////////////
             //  Render Open GUI  //
             ///////////////////////
-            GUILayout.BeginVertical(GUI.skin.window, GUILayout.Width(150), GUILayout.Height(50));
-            if (GUILayout.Button("<")) data.UIhidden = true;
+            GUILayout.BeginVertical(windowSkin, GUILayout.Width(130), GUILayout.Height(50));
+            if (GUILayout.Button("<", GUILayout.Width(30))) data.UIhidden = true;
+            EditorGUILayout.Space();
 
             // Main controls
             EditorGUILayout.LabelField("Extra Camera Tools", headerSkin);
