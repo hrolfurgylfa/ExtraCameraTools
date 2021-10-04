@@ -100,13 +100,11 @@ public class ExtraCameraTools : EditorWindow
             EditorGUILayout.Space();
 
             // Main controls
-            EditorGUILayout.LabelField("Extra Camera Tools", headerSkin);
-            float sceneViewSizeCopy = sceneView.size;
-            EditorGUILayout.LabelField("Hand Tool Move Speed");
-            newSize = EditorGUILayout.Slider(sceneViewSizeCopy, data.minZoom, data.maxZoom);
+            EditorGUILayout.LabelField("Hand Tool Move Speed", headerSkin);
+            newSize = EditorGUILayout.Slider(sceneView.size, data.minZoom, data.maxZoom);
             if (data.useSavePositions)
             {
-                EditorGUILayout.LabelField("Saved Positions");
+                EditorGUILayout.LabelField("Saved Positions", headerSkin);
                 for (int i = 0; i < data.savedPositions.Count; i++)
                 {
                     var savedPos = data.savedPositions[i];
@@ -115,6 +113,7 @@ public class ExtraCameraTools : EditorWindow
                     // Remove position
                     if (GUILayout.Button("-"))
                     {
+                        Undo.RecordObject(data, "Removed Saved Location");
                         data.savedPositions.RemoveAt(i);
                         i--;
                     }
@@ -130,6 +129,7 @@ public class ExtraCameraTools : EditorWindow
                 if (GUILayout.Button("+"))
                 {
                     // Save position
+                    Undo.RecordObject(data, "Saved Location");
                     var cameraPosition = CreateLocation(sceneView, data.savedPositions.Count + 1);
                     data.savedPositions.Add(cameraPosition);
                 }
