@@ -104,32 +104,35 @@ public class ExtraCameraTools : EditorWindow
             float sceneViewSizeCopy = sceneView.size;
             EditorGUILayout.LabelField("Hand Tool Move Speed");
             newSize = EditorGUILayout.Slider(sceneViewSizeCopy, data.minZoom, data.maxZoom);
-            EditorGUILayout.LabelField("Saved Positions");
-            for (int i = 0; i < data.savedPositions.Count; i++)
+            if (data.useSavePositions)
             {
-                var savedPos = data.savedPositions[i];
-                EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                EditorGUILayout.LabelField(savedPos.title, GUILayout.MinWidth(50));
-                // Remove position
-                if (GUILayout.Button("-"))
+                EditorGUILayout.LabelField("Saved Positions");
+                for (int i = 0; i < data.savedPositions.Count; i++)
                 {
-                    data.savedPositions.RemoveAt(i);
-                    i--;
+                    var savedPos = data.savedPositions[i];
+                    EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+                    EditorGUILayout.LabelField(savedPos.title, GUILayout.MinWidth(50));
+                    // Remove position
+                    if (GUILayout.Button("-"))
+                    {
+                        data.savedPositions.RemoveAt(i);
+                        i--;
+                    }
+                    // Go to position
+                    if (GUILayout.Button("Go"))
+                    {
+                        goToLocationCount = 0;
+                        oldCamPos = CreateLocation(sceneView, 0);
+                        goingToPosition = i;
+                    }
+                    EditorGUILayout.EndHorizontal();
                 }
-                // Go to position
-                if (GUILayout.Button("Go"))
+                if (GUILayout.Button("+"))
                 {
-                    goToLocationCount = 0;
-                    oldCamPos = CreateLocation(sceneView, 0);
-                    goingToPosition = i;
+                    // Save position
+                    var cameraPosition = CreateLocation(sceneView, data.savedPositions.Count + 1);
+                    data.savedPositions.Add(cameraPosition);
                 }
-                EditorGUILayout.EndHorizontal();
-            }
-            if (GUILayout.Button("+"))
-            {
-                // Save position
-                var cameraPosition = CreateLocation(sceneView, data.savedPositions.Count + 1);
-                data.savedPositions.Add(cameraPosition);
             }
 
             // Settings
@@ -146,7 +149,11 @@ public class ExtraCameraTools : EditorWindow
                     data.moveSpeedAtMinZoom = EditorGUILayout.FloatField("Max Zoom Move Speed", data.moveSpeedAtMinZoom);
                 }
                 GUI.enabled = true;
+
+                data.useSavePositions = EditorGUILayout.Toggle("Enable Save Positions", data.useSavePositions);
+                GUI.enabled = data.useSavePositions;
                 data.goToLocationSpeed = EditorGUILayout.FloatField("Go To Location Speed", data.goToLocationSpeed);
+                GUI.enabled = true;
                 EditorGUI.indentLevel--;
             }
             EditorGUILayout.EndFoldoutHeaderGroup();

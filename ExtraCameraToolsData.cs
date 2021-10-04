@@ -25,5 +25,6 @@ public class ExtraCameraToolsData : ScriptableObject
     public float maxZoom = 5f;
     public float moveSpeedAtMinZoom = 0.1f;
     public List<CameraPosition> savedPositions = new List<CameraPosition>();
+    public bool useSavePositions = true;
     public float goToLocationSpeed = 10f;
 }
