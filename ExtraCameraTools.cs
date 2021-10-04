@@ -187,32 +187,29 @@ public class ExtraCameraTools : EditorWindow
         //  Edit Positions  //
         //////////////////////
 
-        if (data.disableNegativeScroll)
+        // Make sure the scene size doesn't go below 0 if disableNegativeScroll is enabled
+        if (data.disableNegativeScroll && sceneView.size < data.minZoom)
         {
-            // Make sure the scene size doesn't go below 0 if disableNegativeScroll is enabled
-            if (sceneView.size < data.minZoom)
-            {
-                sceneView.size = data.minZoom;
+            sceneView.size = data.minZoom;
 
-                // Move the camera a bit forward if it went below 0 to not restrict movement
-                sceneView.pivot += sceneView.camera.transform.forward * data.moveSpeedAtMinZoom;
-            }
+            // Move the camera a bit forward if it went below 0 to not restrict movement
+            sceneView.pivot += sceneView.camera.transform.forward * data.moveSpeedAtMinZoom;
+        }
 
-            // Directly edit the scene size
-            bool editsByClamp = sceneView.size > data.maxZoom && newSize == data.maxZoom;
-            if (sceneView.size != newSize && !editsByClamp)
-            {
-                // Calculate the offset
-                Quaternion camRot = sceneView.camera.transform.rotation;
-                Vector3 normalizedChangeVector = camRot * Vector3.forward;
-                float change = newSize - sceneView.size;
-                float finalChange = change * 2;
-                Vector3 changeVector = normalizedChangeVector * finalChange;
+        // Directly edit the scene size with the slider
+        bool editsByClamp = (sceneView.size > data.maxZoom && newSize == data.maxZoom) || (sceneView.size < data.minZoom && newSize == data.minZoom);
+        if (sceneView.size != newSize && !editsByClamp)
+        {
+            // Calculate the offset
+            Quaternion camRot = sceneView.camera.transform.rotation;
+            Vector3 normalizedChangeVector = camRot * Vector3.forward;
+            float change = newSize - sceneView.size;
+            float finalChange = change * 2;
+            Vector3 changeVector = normalizedChangeVector * finalChange;
 
-                // Set the values
-                sceneView.size = newSize;
-                sceneView.pivot = sceneView.pivot + changeVector;
-            }
+            // Set the values
+            sceneView.size = newSize;
+            sceneView.pivot = sceneView.pivot + changeVector;
         }
 
 
