@@ -1,6 +1,8 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEditor.AnimatedValues;
 
 [InitializeOnLoad]
 public class ExtraCameraTools : EditorWindow
@@ -8,6 +10,11 @@ public class ExtraCameraTools : EditorWindow
     // Data
     public static string dataLocation = "Assets/Editor/ExtraCameraTools/ExtraCameraToolsData.asset";
     private static ExtraCameraToolsData data;
+
+    private static float goToLocationCount = 1;
+    private static int goingToPosition = -1;
+    private static ExtraCameraToolsData.CameraPosition oldCamPos;
+
 
     // GUI Styles
     private static GUIStyle headerSkin;
@@ -34,6 +41,30 @@ public class ExtraCameraTools : EditorWindow
         else SceneView.duringSceneGui += OnScene;
 
         data.UIEnabled = !data.UIEnabled;
+    }
+
+    static void GoToLocation(SceneView sceneView, ExtraCameraToolsData.CameraPosition newPos,
+                             ExtraCameraToolsData.CameraPosition oldPos, float amount)
+    {
+        sceneView.camera.transform.position = Vector3.Lerp(oldPos.cameraPosition, newPos.cameraPosition, amount);
+        sceneView.rotation = Quaternion.Lerp(oldPos.cameraRotation, newPos.cameraRotation, amount);
+        sceneView.pivot = Vector3.Lerp(oldPos.pivotPosition, newPos.pivotPosition, amount);
+        sceneView.size = Mathf.Lerp(oldPos.sceneViewSize, newPos.sceneViewSize, amount);
+    }
+
+    static ExtraCameraToolsData.CameraPosition CreateLocation(SceneView sceneView, int posNum)
+    {
+        return CreateLocation(sceneView, "Position " + posNum.ToString());
+    }
+    static ExtraCameraToolsData.CameraPosition CreateLocation(SceneView sceneView, string title)
+    {
+        var cameraPosition = new ExtraCameraToolsData.CameraPosition();
+        cameraPosition.title = title;
+        cameraPosition.cameraPosition = sceneView.camera.transform.position;
+        cameraPosition.cameraRotation = sceneView.rotation;
+        cameraPosition.pivotPosition = sceneView.pivot;
+        cameraPosition.sceneViewSize = sceneView.size;
+        return cameraPosition;
     }
 
     private static void OnScene(SceneView sceneView)
@@ -73,6 +104,33 @@ public class ExtraCameraTools : EditorWindow
             float sceneViewSizeCopy = sceneView.size;
             EditorGUILayout.LabelField("Hand Tool Move Speed");
             newSize = EditorGUILayout.Slider(sceneViewSizeCopy, data.minZoom, data.maxZoom);
+            EditorGUILayout.LabelField("Saved Positions");
+            for (int i = 0; i < data.savedPositions.Count; i++)
+            {
+                var savedPos = data.savedPositions[i];
+                EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
+                EditorGUILayout.LabelField(savedPos.title, GUILayout.MinWidth(50));
+                // Remove position
+                if (GUILayout.Button("-"))
+                {
+                    data.savedPositions.RemoveAt(i);
+                    i--;
+                }
+                // Go to position
+                if (GUILayout.Button("Go"))
+                {
+                    goToLocationCount = 0;
+                    oldCamPos = CreateLocation(sceneView, 0);
+                    goingToPosition = i;
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+            if (GUILayout.Button("+"))
+            {
+                // Save position
+                var cameraPosition = CreateLocation(sceneView, data.savedPositions.Count + 1);
+                data.savedPositions.Add(cameraPosition);
+            }
 
             // Settings
             data.showSettings = EditorGUILayout.BeginFoldoutHeaderGroup(data.showSettings, "Settings");
@@ -88,6 +146,7 @@ public class ExtraCameraTools : EditorWindow
                     data.moveSpeedAtMinZoom = EditorGUILayout.FloatField("Max Zoom Move Speed", data.moveSpeedAtMinZoom);
                 }
                 GUI.enabled = true;
+                data.goToLocationSpeed = EditorGUILayout.FloatField("Go To Location Speed", data.goToLocationSpeed);
                 EditorGUI.indentLevel--;
             }
             EditorGUILayout.EndFoldoutHeaderGroup();
@@ -100,6 +159,7 @@ public class ExtraCameraTools : EditorWindow
                 EditorGUILayout.LabelField("Scene View Size: " + sceneView.size);
                 EditorGUILayout.LabelField("Camera Vector3: " + sceneView.camera.transform.position.ToString());
                 EditorGUILayout.LabelField("Pivot Vector3: " + sceneView.pivot.ToString());
+                EditorGUILayout.LabelField("Camera Rotation: " + sceneView.camera.transform.rotation.ToString());
                 EditorGUILayout.LabelField("Scene Camera to Pivot: " + sceneView.cameraDistance);
                 if (GUILayout.Button("Reset View Position"))
                 {
@@ -146,6 +206,21 @@ public class ExtraCameraTools : EditorWindow
                 sceneView.size = newSize;
                 sceneView.pivot = sceneView.pivot + changeVector;
             }
+        }
+
+
+        //////////////////////////////
+        //  Lerp between positions  //
+        //////////////////////////////
+        if (goToLocationCount < 1)
+        {
+            goToLocationCount += 0.002f * data.goToLocationSpeed;
+            GoToLocation(sceneView, data.savedPositions[goingToPosition], oldCamPos, goToLocationCount);
+        }
+        else if (goingToPosition != -1)
+        {
+            goingToPosition = -1;
+            goToLocationCount = 1;
         }
 
         Handles.EndGUI();
