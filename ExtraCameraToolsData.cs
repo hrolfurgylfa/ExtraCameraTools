@@ -14,6 +14,15 @@ public class ExtraCameraToolsData : ScriptableObject
         public Vector3 cameraPosition;
         public Quaternion cameraRotation;
         public float sceneViewSize;
+
+        public CameraPosition(string newTitle, CameraPosition oldStruct)
+        {
+            title = newTitle;
+            pivotPosition = oldStruct.pivotPosition;
+            cameraPosition = oldStruct.cameraPosition;
+            cameraRotation = oldStruct.cameraRotation;
+            sceneViewSize = oldStruct.sceneViewSize;
+        }
     }
 
     public bool disableNegativeScroll = true;

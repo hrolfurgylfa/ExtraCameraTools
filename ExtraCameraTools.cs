@@ -15,6 +15,8 @@ public class ExtraCameraTools : EditorWindow
     private static int goingToPosition = -1;
     private static ExtraCameraToolsData.CameraPosition oldCamPos;
 
+    private static int editingText = -1;
+
 
     // GUI Styles
     private static GUIStyle headerSkin;
@@ -109,16 +111,32 @@ public class ExtraCameraTools : EditorWindow
                 {
                     var savedPos = data.savedPositions[i];
                     EditorGUILayout.BeginHorizontal(GUILayout.ExpandWidth(false));
-                    EditorGUILayout.LabelField(savedPos.title, GUILayout.MinWidth(50));
+                    // Position Title
+                    if (editingText != i)
+                    {
+                        // Title
+                        if (GUILayout.Button(savedPos.title, GUI.skin.label, GUILayout.ExpandWidth(true)))
+                            editingText = i;
+                    }
+                    else
+                    {
+                        // Title
+                        string newTitle = EditorGUILayout.TextField(savedPos.title, GUILayout.ExpandWidth(true));
+                        data.savedPositions[i] = new ExtraCameraToolsData.CameraPosition(newTitle, savedPos);
+
+                        // Done editing
+                        if (GUILayout.Button("Done", GUILayout.ExpandWidth(false)))
+                            editingText = -1;
+                    }
                     // Remove position
-                    if (GUILayout.Button("-"))
+                    if (GUILayout.Button("-", GUILayout.ExpandWidth(false)))
                     {
                         Undo.RecordObject(data, "Removed Saved Location");
                         data.savedPositions.RemoveAt(i);
                         i--;
                     }
                     // Go to position
-                    if (GUILayout.Button("Go"))
+                    if (GUILayout.Button("Go", GUILayout.ExpandWidth(false)))
                     {
                         goToLocationCount = 0;
                         oldCamPos = CreateLocation(sceneView, 0);
