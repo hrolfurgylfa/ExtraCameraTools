@@ -17,6 +17,11 @@ public class ExtraCameraTools : EditorWindow
 
     private static int editingText = -1;
 
+    private static float lastTime;
+    private static float lastTitleClickTimer = 0;
+    private static int lastTitleClicked = -1;
+    private static int titleClicks = 0;
+
 
     // GUI Styles
     private static GUIStyle headerSkin;
@@ -71,6 +76,14 @@ public class ExtraCameraTools : EditorWindow
 
     private static void OnScene(SceneView sceneView)
     {
+        // Delta time calculations
+        float deltaTime;
+        if (lastTime == 0)
+            deltaTime = 0;
+        else
+            deltaTime = Time.realtimeSinceStartup - lastTime;
+        lastTime = Time.realtimeSinceStartup;
+
         //////////////////
         //  GUI Styles  //
         //////////////////
@@ -114,9 +127,29 @@ public class ExtraCameraTools : EditorWindow
                     // Position Title
                     if (editingText != i)
                     {
-                        // Title
-                        if (GUILayout.Button(savedPos.title, GUI.skin.label, GUILayout.ExpandWidth(true)))
+                        // Double click title
+                        bool clicked = GUILayout.Button(savedPos.title, GUI.skin.label, GUILayout.ExpandWidth(true));
+                        if (lastTitleClickTimer != 0) lastTitleClickTimer -= deltaTime;
+                        // Debug.Log("lastTitleClickTimer: " + lastTitleClickTimer);
+                        if (lastTitleClickTimer < 0)
+                        {
+                            lastTitleClickTimer = 0;
+                            lastTitleClicked = -1;
+                            titleClicks = 0;
+                        }
+                        // If there was a click and it was either a first or it's the same as last time
+                        if (clicked && (lastTitleClicked == i || titleClicks == 0))
+                        {
+                            lastTitleClickTimer = data.maxWaitBetweenTitleClicks;
+                            lastTitleClicked = i;
+                            titleClicks += 1;
+                        }
+                        // Check if enough clicks have been done
+                        if (titleClicks >= data.editTitleClicksRequired)
+                        {
+                            titleClicks = 0;
                             editingText = i;
+                        }
                     }
                     else
                     {
@@ -170,7 +203,11 @@ public class ExtraCameraTools : EditorWindow
 
                 data.useSavePositions = EditorGUILayout.Toggle("Enable Save Positions", data.useSavePositions);
                 GUI.enabled = data.useSavePositions;
-                data.goToLocationSpeed = EditorGUILayout.FloatField("Go To Location Speed", data.goToLocationSpeed);
+                {
+                    data.goToLocationSpeed = EditorGUILayout.FloatField("Go To Location Speed", data.goToLocationSpeed);
+                    data.editTitleClicksRequired = EditorGUILayout.IntField("Clicks To Edit Title", data.editTitleClicksRequired);
+                    data.maxWaitBetweenTitleClicks = EditorGUILayout.FloatField("Wait Between Clicks", data.maxWaitBetweenTitleClicks);
+                }
                 GUI.enabled = true;
                 EditorGUI.indentLevel--;
             }

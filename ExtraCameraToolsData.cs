@@ -36,4 +36,6 @@ public class ExtraCameraToolsData : ScriptableObject
     public List<CameraPosition> savedPositions = new List<CameraPosition>();
     public bool useSavePositions = true;
     public float goToLocationSpeed = 10f;
+    public int editTitleClicksRequired = 2;
+    public float maxWaitBetweenTitleClicks = .8f;
 }
