@@ -206,6 +206,7 @@ public class ExtraCameraTools : EditorWindow
                 {
                     data.goToLocationSpeed = EditorGUILayout.FloatField("Go To Location Speed", data.goToLocationSpeed);
                     data.editTitleClicksRequired = EditorGUILayout.IntField("Clicks To Edit Title", data.editTitleClicksRequired);
+                    if (data.editTitleClicksRequired < 1) data.editTitleClicksRequired = 1;
                     data.maxWaitBetweenTitleClicks = EditorGUILayout.FloatField("Wait Between Clicks", data.maxWaitBetweenTitleClicks);
                 }
                 GUI.enabled = true;
