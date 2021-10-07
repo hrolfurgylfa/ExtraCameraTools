@@ -8,7 +8,8 @@ using UnityEngine;
 public class ExtraCameraTools : EditorWindow
 {
     // Data
-    public static string dataLocation = "Assets/Editor/ExtraCameraTools/ExtraCameraToolsData.asset";
+    public static string baseData = "Assets/Editor/ExtraCameraTools/";
+    public static string dataLocation = baseData + "ExtraCameraToolsData.asset";
     private static ExtraCameraToolsData data;
 
     private static float goToLocationCount = 1;
