@@ -233,8 +233,11 @@ namespace Hroi.ExtraCameraTools
                     EditorGUILayout.LabelField("Scene Camera to Pivot: " + sceneView.cameraDistance);
                     if (GUILayout.Button("Reset View Position"))
                     {
-                        sceneView.camera.transform.Reset();
+                        sceneView.camera.transform.position = Vector3.zero;
+                        sceneView.camera.transform.rotation = Quaternion.identity;
+                        sceneView.camera.transform.localScale = Vector3.one;
                         sceneView.pivot = Vector3.zero;
+                        sceneView.rotation = Quaternion.identity;
                     }
                     EditorGUI.indentLevel--;
                 }
