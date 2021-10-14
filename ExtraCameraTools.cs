@@ -12,12 +12,15 @@ public class ExtraCameraTools : EditorWindow
     public static string dataLocation = baseData + "ExtraCameraToolsData.asset";
     private static ExtraCameraToolsData data;
 
+    // Lerping between locations
     private static float goToLocationCount = 1;
     private static int goingToPosition = -1;
     private static ExtraCameraToolsData.CameraPosition oldCamPos;
 
+    // If the title of some location is being edited
     private static int editingText = -1;
 
+    // Double clicking on titles to edit, not single click
     private static float lastTime;
     private static float lastTitleClickTimer = 0;
     private static int lastTitleClicked = -1;
@@ -36,6 +39,7 @@ public class ExtraCameraTools : EditorWindow
         {
             data = CreateInstance<ExtraCameraToolsData>();
             AssetDatabase.CreateAsset(data, dataLocation);
+            Debug.Log("ExtraCameraTools: Couldn't load settings file, creating a new one instead.");
         }
 
         // Open the UI if it was enabled before
