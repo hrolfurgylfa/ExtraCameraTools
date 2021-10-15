@@ -2,7 +2,7 @@
 
 This plugin adds a few extra camera tools, it allows you to add save points for your camera to return to at any time, it sets a limiter so that when you zoom in the hand tool always slows down (can be disabled), and it adds a slider to let you change the speed of the hand tool manually without moving the camera.
 
-<img src="https://i.imgur.com/jB2qP6h.png" alt="An image of how the tool looks" width="600" height="auto"/>
+<img src="https://i.imgur.com/Vntb2s6.png" alt="An image of how the tool looks" width="600" height="auto"/>
 
 ## Installation
 
