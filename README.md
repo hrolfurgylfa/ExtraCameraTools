@@ -6,7 +6,7 @@ This plugin adds a few extra camera tools, it allows you to add save points for 
 
 ## Installation
 
-You can install the latest version as a Unity package [here](https://github.com/hrolfurgylfa/ExtraCameraTools/releases), or you can clone this repository into any folder under Assets/Editor/
+You can install the latest version as a Unity package from [here](https://github.com/hrolfurgylfa/ExtraCameraTools/releases), or you can clone this repository into any folder under Assets/Editor/
 
 This tool only works on Unity 2019 and higher.
 
