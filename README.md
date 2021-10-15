@@ -24,6 +24,6 @@ I mainly developed this tool because of Unity's default behavior when zooming in
 
 Here is a demonstration of that:
 
-<img src="https://i.imgur.com/yLQNKnk.gif" alt="A demonstration of Unity's default zoom in behavior" width="600" height="auto"/>
+<img src="https://cdn.discordapp.com/attachments/566806197815214110/898373082115342366/ezgif-7-72e12f37ba87.gif" alt="A demonstration of Unity's default zoom in behavior" width="600" height="auto"/>
 
 As can be seen, by only zooming in, the speed of the hand tool increased instead of decreasing.
