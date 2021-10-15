@@ -160,13 +160,22 @@ namespace Hroi.ExtraCameraTools
                         }
                         else
                         {
+                            GUI.SetNextControlName("user");
+
                             // Title
-                            string newTitle = EditorGUILayout.TextField(savedPos.title, GUILayout.ExpandWidth(true));
-                            data.savedPositions[i] = new CameraPosition(newTitle, savedPos);
+                            string newTitle = EditorGUILayout.DelayedTextField(savedPos.title, GUILayout.ExpandWidth(true));
 
                             // Done editing
                             if (GUILayout.Button("Done", GUILayout.ExpandWidth(false)))
                                 editingText = -1;
+
+                            // Automatic done detection
+                            if (savedPos.title != newTitle)
+                            {
+                                data.savedPositions[i] = new CameraPosition(newTitle, savedPos);
+                                Debug.Log(Event.current.Equals(Event.KeyboardEvent("return")) && GUI.GetNameOfFocusedControl() == "user");
+                                editingText = -1;
+                            }
                         }
                         // Remove position
                         if (GUILayout.Button("-", GUILayout.ExpandWidth(false)))
