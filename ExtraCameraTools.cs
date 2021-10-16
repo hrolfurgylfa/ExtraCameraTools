@@ -28,6 +28,8 @@ namespace Hroi.ExtraCameraTools
         private static int lastTitleClicked = -1;
         private static int titleClicks = 0;
 
+        // Select title automatically when starting to edit
+        private static bool editTitleFieldHasBeenSelected = true;
 
         // GUI Styles
         private static GUIStyle headerSkin;
@@ -137,7 +139,6 @@ namespace Hroi.ExtraCameraTools
                             // Double click title
                             bool clicked = GUILayout.Button(savedPos.title, GUI.skin.label, GUILayout.ExpandWidth(true));
                             if (lastTitleClickTimer != 0) lastTitleClickTimer -= deltaTime;
-                            // Debug.Log("lastTitleClickTimer: " + lastTitleClickTimer);
                             if (lastTitleClickTimer < 0)
                             {
                                 lastTitleClickTimer = 0;
@@ -156,24 +157,30 @@ namespace Hroi.ExtraCameraTools
                             {
                                 titleClicks = 0;
                                 editingText = i;
+                                editTitleFieldHasBeenSelected = false;
                             }
                         }
                         else
                         {
-                            GUI.SetNextControlName("user");
-
                             // Title
+                            GUI.SetNextControlName("editTitleField");
                             string newTitle = EditorGUILayout.DelayedTextField(savedPos.title, GUILayout.ExpandWidth(true));
+
+                            // Automatic selection
+                            if (!editTitleFieldHasBeenSelected)
+                            {
+                                EditorGUI.FocusTextInControl("editTitleField");
+                                editTitleFieldHasBeenSelected = true;
+                            }
 
                             // Done editing
                             if (GUILayout.Button("Done", GUILayout.ExpandWidth(false)))
                                 editingText = -1;
 
-                            // Automatic done detection
+                            // Automatic done detection when starting to edit
                             if (savedPos.title != newTitle)
                             {
                                 data.savedPositions[i] = new CameraPosition(newTitle, savedPos);
-                                Debug.Log(Event.current.Equals(Event.KeyboardEvent("return")) && GUI.GetNameOfFocusedControl() == "user");
                                 editingText = -1;
                             }
                         }
