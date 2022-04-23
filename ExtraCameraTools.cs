@@ -112,7 +112,8 @@ namespace Hroi.ExtraCameraTools
                 GUILayout.BeginVertical(windowSkin, GUILayout.Width(10), GUILayout.Height(10));
                 if (GUILayout.Button(">", GUILayout.Width(30))) data.UIhidden = false;
                 GUILayout.EndVertical();
-                newSize = sceneView.size;
+                // Make sure we don't go beyond the limits even if the UI is hidden
+                newSize = Mathf.Clamp(sceneView.size, data.minZoom, data.maxZoom);
             }
             else
             {
